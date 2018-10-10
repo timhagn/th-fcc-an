@@ -84,7 +84,12 @@ mongo.connect(process.env.DATABASE, {useNewUrlParser: true}, (err, db) => {
     // Route to /profile (only if authenticated).
     app.route('/profile')
         .get(ensureAuthenticated, (req,res) => {
-          res.render(process.cwd() + '/views/pug/profile');
+          res.render(process.cwd() + '/views/pug/profile',
+              {
+                title: 'Home page',
+                message: 'Please login',
+                username: req.user.username
+              });
         });
 
     // Route to /login.

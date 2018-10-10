@@ -110,7 +110,7 @@ mongo.connect(process.env.DATABASE, {useNewUrlParser: true}, (err, client) => {
     app.route('/drop')
         .get((req, res) => {
           req.logout();
-          db.dropDatabase();
+          db.collection('users').deleteMany( { } );
           res.redirect('/');
         });
     // Register route.
@@ -119,12 +119,17 @@ mongo.connect(process.env.DATABASE, {useNewUrlParser: true}, (err, client) => {
             db.collection('users').findOne({ username: req.body.username }, function (err, user) {
               if(err) {
                 next(err);
-              } else if (user) {
+              }
+              // Comment this out, if second registration challenge fails.
+              else if (user) {
                 res.redirect('/');
-              } else {
+              }
+              else {
                 db.collection('users').insertOne(
-                    {username: req.body.username,
-                      password: req.body.password},
+                    {
+                      username: req.body.username,
+                      password: req.body.password
+                    },
                     (err, doc) => {
                       if(err) {
                         res.redirect('/');

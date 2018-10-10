@@ -6,7 +6,8 @@ const fccTesting  = require('./freeCodeCamp/fcctesting.js');
 // Add express-session & passport.
 const session = require('express-session');
 const passport = require('passport');
-
+// MongoDB.
+const db = require('mongodb');
 
 const app = express();
 
@@ -24,6 +25,19 @@ app.use(session({
 
 app.use(passport.initialize());
 app.use(passport.session());
+
+passport.serializeUser((user, done) => {
+  done(null, user._id);
+});
+
+// passport.deserializeUser((id, done) => {
+//   db.collection('users').findOne(
+//       {_id: new ObjectID(id)},
+//       (err, doc) => {
+//         done(null, doc);
+//       }
+//   );
+// });
 
 // Add 'pug' as render plugin.
 app.set('view engine', 'pug');

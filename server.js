@@ -23,6 +23,7 @@ app.use(session({
 }));
 
 app.use(passport.initialize());
+app.use(passport.session());
 
 // Add 'pug' as render plugin.
 app.set('view engine', 'pug');

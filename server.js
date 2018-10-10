@@ -89,7 +89,7 @@ mongo.connect(process.env.DATABASE, {useNewUrlParser: true}, (err, client) => {
         .get(ensureAuthenticated, (req,res) => {
           res.render(process.cwd() + '/views/pug/profile',
               {
-                title: 'Home page',
+                title: 'Profile Page',
                 message: 'Please login',
                 username: req.user.username
               });
@@ -105,6 +105,12 @@ mongo.connect(process.env.DATABASE, {useNewUrlParser: true}, (err, client) => {
     app.route('/logout')
         .get((req, res) => {
           req.logout();
+          res.redirect('/');
+        });
+    app.route('/drop')
+        .get((req, res) => {
+          req.logout();
+          db.dropDatabase();
           res.redirect('/');
         });
     // Register route.

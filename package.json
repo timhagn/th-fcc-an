@@ -12,7 +12,8 @@
 		"cors": "^2.8.4",
 		"express": "^4.14.1",
 		"helmet": "^3.4.0",
-		"mongodb": "^3.1.6"
+		"mongodb": "^3.1.6",
+		"pug": "^2.0.3"
 	},
 	"engines": {
 		"node": "8.x"

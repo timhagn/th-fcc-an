@@ -35,6 +35,15 @@ passport.serializeUser((user, done) => {
   done(null, user._id);
 });
 
+function ensureAuthenticated(req, res, next) {
+  if (req.isAuthenticated()) {
+    console.log('authenticated');
+    return next();
+  }
+  console.log('redirect');
+  res.redirect('/');
+}
+
 mongo.connect(process.env.DATABASE, {useNewUrlParser: true}, (err, db) => {
   if(err) {
     console.log('Database error: ' + err);
@@ -65,7 +74,24 @@ mongo.connect(process.env.DATABASE, {useNewUrlParser: true}, (err, db) => {
     app.route('/')
         .get((req, res) => {
           res.render(process.cwd() + '/views/pug/index.pug',
-              {title: 'Hello', message: 'Please login'});
+              {
+                title: 'Hello',
+                message: 'Please login',
+                showLogin: true
+              });
+        });
+
+    // Route to /profile (only if authenticated).
+    app.route('/profile')
+        .get(ensureAuthenticated, (req,res) => {
+          res.render(process.cwd() + '/views/pug/profile');
+        });
+
+    // Route to /login.
+    app.route('/login')
+        .post(passport.authenticate('local', { failureRedirect: '/' }),
+            (req, res) => {
+          res.redirect('/profile');
         });
 
     app.listen(process.env.PORT || 3000, () => {

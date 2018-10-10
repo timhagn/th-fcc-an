@@ -75,7 +75,7 @@ mongo.connect(process.env.DATABASE, {useNewUrlParser: true}, (err, db) => {
         .get((req, res) => {
           res.render(process.cwd() + '/views/pug/index.pug',
               {
-                title: 'Hello',
+                title: 'Home page',
                 message: 'Please login',
                 showLogin: true
               });

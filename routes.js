@@ -1,7 +1,4 @@
 const passport = require('passport');
-// MongoDB.
-const mongo = require('mongodb').MongoClient;
-const ObjectId = require('mongodb').ObjectId;
 const bcrypt = require('bcrypt');
 
 function ensureAuthenticated(req, res, next) {

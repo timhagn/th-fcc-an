@@ -1,7 +1,6 @@
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
 // MongoDB.
-const mongo = require('mongodb').MongoClient;
 const ObjectId = require('mongodb').ObjectId;
 const bcrypt = require('bcrypt');
 

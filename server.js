@@ -10,6 +10,7 @@ const passport = require('passport');
 const LocalStrategy = require('passport-local');
 // MongoDB.
 const mongo = require('mongodb').MongoClient;
+const ObjectId = require('mongodb').ObjectId;
 
 const app = express();
 
@@ -44,15 +45,16 @@ function ensureAuthenticated(req, res, next) {
   res.redirect('/');
 }
 
-mongo.connect(process.env.DATABASE, {useNewUrlParser: true}, (err, db) => {
+mongo.connect(process.env.DATABASE, {useNewUrlParser: true}, (err, client) => {
   if(err) {
     console.log('Database error: ' + err);
   } else {
     console.log('Successful database connection');
+    let db = client.db('user_auth');
 
     passport.deserializeUser((id, done) => {
       db.collection('users').findOne(
-          {_id: new ObjectID(id)},
+          {_id: new ObjectId(id)},
           (err, doc) => {
             done(null, doc);
           }
@@ -108,25 +110,25 @@ mongo.connect(process.env.DATABASE, {useNewUrlParser: true}, (err, db) => {
     // Register route.
     app.route('/register')
         .post((req, res, next) => {
-              db.collection('users').findOne({ username: req.body.username }, function (err, user) {
-                if(err) {
-                  next(err);
-                } else if (user) {
-                  res.redirect('/');
-                } else {
-                  db.collection('users').insertOne(
-                      {username: req.body.username,
-                        password: req.body.password},
-                      (err, doc) => {
-                        if(err) {
-                          res.redirect('/');
-                        } else {
-                          next(null, user);
-                        }
+            db.collection('users').findOne({ username: req.body.username }, function (err, user) {
+              if(err) {
+                next(err);
+              } else if (user) {
+                res.redirect('/');
+              } else {
+                db.collection('users').insertOne(
+                    {username: req.body.username,
+                      password: req.body.password},
+                    (err, doc) => {
+                      if(err) {
+                        res.redirect('/');
+                      } else {
+                        next(null, user);
                       }
-                  )
-                }
-              })},
+                    }
+                )
+              }
+            })},
             passport.authenticate('local', { failureRedirect: '/' }),
             (req, res, next) => {
               res.redirect('/profile');
